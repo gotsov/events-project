@@ -1,9 +1,7 @@
 package com.events.project.models.entities;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
+import com.events.project.models.enums.Role;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -33,9 +31,6 @@ public class User extends BaseEntity {
     @Column(nullable = false)
     private String password;
 
-    @Column(nullable = false)
-    private boolean isOrganizer;
-
     @OneToMany(mappedBy = "user")
     private List<Ticket> tickets;
 
@@ -44,4 +39,7 @@ public class User extends BaseEntity {
 
     @OneToMany(mappedBy = "user")
     private List<Comment> comments;
+
+    @Enumerated(EnumType.STRING)
+    private Role role;
 }

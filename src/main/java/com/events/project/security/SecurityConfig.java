@@ -45,7 +45,6 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
         AuthenticationManager authenticationManager = getAuthenticationManager(httpSecurity);
-        AuthenticationProvider authenticationProvider = getAuthenticationProvider();
 
         httpSecurity.cors()
                 .and().csrf().disable()
@@ -54,7 +53,6 @@ public class SecurityConfig {
                 .anyRequest().authenticated()
                 .and()
                 .authenticationManager(authenticationManager)
-                .authenticationProvider(authenticationProvider)
                 .formLogin()
                 .successHandler(new SuccessfulLoginHandler());
 

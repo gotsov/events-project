@@ -1,9 +1,6 @@
 package com.events.project.models.entities;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -36,4 +33,8 @@ public class Venue extends BaseEntity {
 
     @OneToMany(mappedBy = "venue")
     private List<Sector> sectors;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 }

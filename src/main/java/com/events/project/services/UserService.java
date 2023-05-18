@@ -9,4 +9,6 @@ public interface UserService {
     void add(UserDto userDto);
 
     Optional<User> findByEmail(String email);
+
+    Optional<User> getLoggedUser();
 }

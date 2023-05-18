@@ -40,6 +40,9 @@ public class User extends BaseEntity {
     @OneToMany(mappedBy = "user")
     private List<Comment> comments;
 
+    @OneToMany(mappedBy = "user")
+    private List<Venue> venue;
+
     @Enumerated(EnumType.STRING)
     private Role role;
 }

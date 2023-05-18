@@ -6,7 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
@@ -20,13 +20,13 @@ public class Event extends BaseEntity {
     private String name;
 
     @Column
-    private Date startDate;
+    private LocalDateTime startDate;
 
     @Column
-    private Date endDate;
+    private LocalDateTime endDate;
 
     @Column
-    private Date insertTime;
+    private LocalDateTime insertTime;
 
     @Column
     private String description;

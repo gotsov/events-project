@@ -1,7 +1,7 @@
 package com.events.project.security;
 
 import com.events.project.models.entities.User;
-import com.events.project.services.UserService;
+import com.events.project.services.UserServiceImpl;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -16,7 +16,7 @@ import java.util.Optional;
 @Component
 @AllArgsConstructor
 public class UserDetailsServiceImpl implements UserDetailsService {
-    private final UserService userService;
+    private final UserServiceImpl userService;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {

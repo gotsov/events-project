@@ -1,13 +1,17 @@
 package com.events.project.models.entities;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.Date;
-import java.util.List;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -17,7 +21,7 @@ import java.util.List;
 @Table(name = "tickets")
 public class Ticket extends BaseEntity {
     @Column
-    private Date timeBought;
+    private LocalDateTime timeBought;
 
     @ManyToOne
     @JoinColumn(name = "event_id")

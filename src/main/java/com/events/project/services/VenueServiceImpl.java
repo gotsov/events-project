@@ -1,14 +1,12 @@
 package com.events.project.services;
 
 import com.events.project.exceptions.ItemNotFoundException;
-import com.events.project.models.dtos.EventDto;
 import com.events.project.models.dtos.VenueDto;
-import com.events.project.models.entities.Event;
 import com.events.project.models.entities.User;
 import com.events.project.models.entities.Venue;
 import com.events.project.repositories.VenueRepository;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
@@ -19,12 +17,12 @@ import java.util.Optional;
 @Service
 @AllArgsConstructor
 public class VenueServiceImpl implements VenueService {
-    private final ObjectMapper objectMapper;
+    private final ModelMapper modelMapper;
     private final VenueRepository venueRepository;
 
     @Override
     public void add(VenueDto venueDto, User user) {
-        Venue venue = objectMapper.convertValue(venueDto, Venue.class);
+        Venue venue = modelMapper.map(venueDto, Venue.class);
 
         venue.setUser(user);
         venueRepository.save(venue);
@@ -35,7 +33,7 @@ public class VenueServiceImpl implements VenueService {
         List<Venue> venues = venueRepository.findAll();
         List<VenueDto> venueDtos = new ArrayList<>();
 
-        venues.forEach(venue -> venueDtos.add(objectMapper.convertValue(venue, VenueDto.class)));
+        venues.forEach(venue -> venueDtos.add(modelMapper.map(venue, VenueDto.class)));
 
         return venueDtos;
     }
@@ -45,7 +43,7 @@ public class VenueServiceImpl implements VenueService {
         Optional<Venue> venue = venueRepository.findById(id);
 
         if (venue.isPresent()) {
-            VenueDto eventDto = objectMapper.convertValue(venue.get(), VenueDto.class);
+            VenueDto eventDto = modelMapper.map(venue.get(), VenueDto.class);
             return Optional.of(eventDto);
         }
 
@@ -55,14 +53,14 @@ public class VenueServiceImpl implements VenueService {
     @Override
     public VenueDto update(Long id, VenueDto venueDto) {
         Optional<Venue> venue = venueRepository.findById(id);
-        Venue updatedVenue = objectMapper.convertValue(venueDto, Venue.class);
+        Venue updatedVenue = modelMapper.map(venueDto, Venue.class);
 
         if (venue.isPresent()) {
             BeanUtils.copyProperties(venue, updatedVenue);
 
             venueRepository.save(venue.get());
 
-            return objectMapper.convertValue(venue, VenueDto.class);
+            return modelMapper.map(venue, VenueDto.class);
         }
 
         return null;

@@ -2,15 +2,16 @@ package com.events.project.services;
 
 import com.events.project.exceptions.ItemNotFoundException;
 import com.events.project.models.dtos.EventDto;
+import com.events.project.models.dtos.TagDto;
 import com.events.project.models.entities.Event;
+import com.events.project.models.entities.Tag;
 import com.events.project.models.entities.User;
 import com.events.project.repositories.EventRepository;
 import com.events.project.repositories.TagRepository;
 import com.events.project.repositories.VenueRepository;
 import com.events.project.util.EventMapper;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
-import org.mapstruct.BeanMapping;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -21,20 +22,36 @@ import java.util.Optional;
 @Service
 @AllArgsConstructor
 public class EventServiceImpl implements EventService {
-    private final ObjectMapper objectMapper;
     private final EventRepository eventRepository;
     private final VenueRepository venueRepository;
     private final TagRepository tagRepository;
+
     private final EventMapper eventMapper;
+    private final ModelMapper modelMapper;
 
     @Override
     public void add(EventDto eventDto, User user) {
-        Event event = objectMapper.convertValue(eventDto, Event.class);
+        Event event = modelMapper.map(eventDto, Event.class);
         event.setUser(user);
         event.setInsertTime(LocalDateTime.now());
+        event.setTags(new ArrayList<>());
+
+        List<Tag> tags = tagRepository.findAll();
+        List<TagDto> tagDtos = new ArrayList<>();
+        tags.forEach(tag -> tagDtos.add(modelMapper.map(tag, TagDto.class)));
+
+        for (TagDto tagDto : eventDto.getTags()) {
+            if (!tagDtos.contains(tagDto)) {
+                Tag newTag = modelMapper.map(tagDto, Tag.class);
+                tagRepository.save(newTag);
+                event.getTags().add(newTag);
+            } else {
+                Optional<Tag> tag = tagRepository.findFirstByName(tagDto.getName());
+                event.getTags().add(tag.get());
+            }
+        }
 
         venueRepository.save(event.getVenue());
-        tagRepository.saveAll(event.getTags());
         eventRepository.save(event);
     }
 
@@ -43,7 +60,7 @@ public class EventServiceImpl implements EventService {
         List<Event> events = eventRepository.findAll();
         List<EventDto> eventDtos = new ArrayList<>();
 
-        events.forEach(event -> eventDtos.add(objectMapper.convertValue(event, EventDto.class)));
+        events.forEach(event -> eventDtos.add(modelMapper.map(event, EventDto.class)));
 
         return eventDtos;
     }
@@ -53,7 +70,7 @@ public class EventServiceImpl implements EventService {
         Optional<Event> event = eventRepository.findById(id);
 
         if (event.isPresent()) {
-            EventDto eventDto = objectMapper.convertValue(event.get(), EventDto.class);
+            EventDto eventDto = modelMapper.map(event.get(), EventDto.class);
             return Optional.of(eventDto);
         }
 

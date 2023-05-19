@@ -3,8 +3,8 @@ package com.events.project.services;
 import com.events.project.models.dtos.UserDto;
 import com.events.project.models.entities.User;
 import com.events.project.repositories.UserRepository;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -15,11 +15,11 @@ import java.util.Optional;
 @AllArgsConstructor
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
-    private final ObjectMapper objectMapper;
+    private final ModelMapper modelMapper;
 
     @Override
     public void add(UserDto userDto) {
-        User user = objectMapper.convertValue(userDto, User.class);
+        User user = modelMapper.map(userDto, User.class);
         user.setRole(userDto.getRole());
         userRepository.save(user);
     }

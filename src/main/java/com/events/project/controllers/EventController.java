@@ -21,7 +21,7 @@ public class EventController {
     private final UserService userService;
 
     @PostMapping
-    public ResponseEntity<String> addEvent(@RequestBody EventDto eventDto) {
+    public ResponseEntity<String> add(@RequestBody EventDto eventDto) {
         Optional<User> user = userService.getLoggedUser();
         user.ifPresent(value -> eventService.add(eventDto, value));
 

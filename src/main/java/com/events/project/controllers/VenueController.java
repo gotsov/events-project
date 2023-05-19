@@ -25,7 +25,7 @@ public class VenueController {
     private final UserService userService;
 
     @PostMapping
-    public ResponseEntity<String> addVenue(@RequestBody VenueDto venueDto) {
+    public ResponseEntity<String> add(@RequestBody VenueDto venueDto) {
         Optional<User> user = userService.getLoggedUser();
         user.ifPresent(value -> venueService.add(venueDto, value));
 
@@ -36,11 +36,8 @@ public class VenueController {
     public ResponseEntity<VenueDto> getById(@PathVariable Long id) {
         Optional<VenueDto> venueDto = venueService.getById(id);
 
-        if (venueDto.isPresent()) {
-            return new ResponseEntity<>(venueDto.get(), HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+        return venueDto.map(dto -> new ResponseEntity<>(dto, HttpStatus.OK))
+                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
     @GetMapping

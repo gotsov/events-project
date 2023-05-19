@@ -11,6 +11,6 @@ import java.util.List;
 @NoArgsConstructor
 public class SectorDto {
     private String name;
-    private String price;
+    private Double price;
     private List<TicketDto> tickets;
 }

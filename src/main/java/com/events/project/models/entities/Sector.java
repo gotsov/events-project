@@ -19,7 +19,7 @@ public class Sector extends BaseEntity {
     private String name;
 
     @Column
-    private String price;
+    private Double price;
 
     @ManyToOne
     @JoinColumn(name = "venue_id")
@@ -27,4 +27,7 @@ public class Sector extends BaseEntity {
 
     @OneToMany(mappedBy = "sector")
     private List<Ticket> tickets;
+
+    @Column
+    private int numberOfTickets;
 }

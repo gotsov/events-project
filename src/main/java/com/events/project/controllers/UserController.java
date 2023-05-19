@@ -15,7 +15,7 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping("/register")
-    public ResponseEntity<String> addUser(@RequestBody UserDto userDto) {
+    public ResponseEntity<String> add(@RequestBody UserDto userDto) {
         userService.add(userDto);
         return ResponseEntity.status(HttpStatus.CREATED).body("Successfully added user: " + userDto.getEmail());
     }

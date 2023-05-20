@@ -46,7 +46,7 @@ public class EventServiceImpl implements EventService {
                 tagRepository.save(newTag);
                 event.getTags().add(newTag);
             } else {
-                Optional<Tag> tag = tagRepository.findFirstByName(tagDto.getName());
+                Optional<Tag> tag = tagRepository.findByName(tagDto.getName());
                 event.getTags().add(tag.get());
             }
         }

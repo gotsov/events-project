@@ -8,6 +8,6 @@ import java.util.Optional;
 
 @Repository
 public interface TagRepository extends JpaRepository<Tag, Long> {
-    Optional<Tag> findFirstByName(String name);
+    Optional<Tag> findByName(String name);
 
 }

@@ -2,6 +2,7 @@ package com.events.project.services;
 
 import com.events.project.exceptions.ItemNotFoundException;
 import com.events.project.models.dtos.UserDto;
+import com.events.project.models.dtos.UserInfoDto;
 import com.events.project.models.entities.User;
 import com.events.project.repositories.UserRepository;
 import lombok.AllArgsConstructor;
@@ -42,5 +43,11 @@ public class UserServiceImpl implements UserService {
         } else {
             throw new ItemNotFoundException("User not found");
         }
+    }
+
+    @Override
+    public UserInfoDto getLoggedUserDto() {
+        User user = getLoggedUser();
+        return modelMapper.map(user, UserInfoDto.class);
     }
 }

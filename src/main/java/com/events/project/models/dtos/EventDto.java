@@ -17,5 +17,5 @@ public class EventDto {
     private String description;
     private VenueDto venue;
     private List<TagDto> tags;
-    private UserEventDto user;
+    private UserInfoDto user;
 }

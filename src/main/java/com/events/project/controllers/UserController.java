@@ -1,6 +1,7 @@
 package com.events.project.controllers;
 
 import com.events.project.models.dtos.UserDto;
+import com.events.project.models.dtos.UserInfoDto;
 import com.events.project.services.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -18,5 +19,11 @@ public class UserController {
     public ResponseEntity<String> add(@RequestBody UserDto userDto) {
         userService.add(userDto);
         return ResponseEntity.status(HttpStatus.CREATED).body("Successfully added user: " + userDto.getEmail());
+    }
+
+    @GetMapping("/current")
+    public ResponseEntity<UserInfoDto> getCurrentLoggedUser() {
+        UserInfoDto userDto = userService.getLoggedUserDto();
+        return new ResponseEntity<>(userDto, HttpStatus.OK);
     }
 }

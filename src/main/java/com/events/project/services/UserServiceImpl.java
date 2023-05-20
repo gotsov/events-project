@@ -1,5 +1,6 @@
 package com.events.project.services;
 
+import com.events.project.exceptions.ItemNotFoundException;
 import com.events.project.models.dtos.UserDto;
 import com.events.project.models.entities.User;
 import com.events.project.repositories.UserRepository;
@@ -30,10 +31,16 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Optional<User> getLoggedUser() {
+    public User getLoggedUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String email = authentication.getName();
 
-        return findByEmail(email);
+        Optional<User> user = findByEmail(email);
+
+        if (user.isPresent()) {
+            return user.get();
+        } else {
+            throw new ItemNotFoundException("User not found");
+        }
     }
 }

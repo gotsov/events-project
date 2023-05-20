@@ -26,8 +26,8 @@ public class VenueController {
 
     @PostMapping
     public ResponseEntity<String> add(@RequestBody VenueDto venueDto) {
-        Optional<User> user = userService.getLoggedUser();
-        user.ifPresent(value -> venueService.add(venueDto, value));
+        User user = userService.getLoggedUser();
+        venueService.add(venueDto, user);
 
         return ResponseEntity.status(HttpStatus.CREATED).body("Successfully added venue: " + venueDto.getName());
     }

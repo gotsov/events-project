@@ -11,4 +11,5 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class TicketDto {
     private LocalDateTime timeBought;
+    private SectorDto sector;
 }

@@ -11,11 +11,11 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 public class EventDto {
+    private Long id;
     private String name;
     private LocalDateTime startDate;
     private LocalDateTime endDate;
     private String description;
     private VenueDto venue;
     private List<TagDto> tags;
-    private UserInfoDto user;
 }

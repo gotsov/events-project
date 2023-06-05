@@ -9,13 +9,13 @@ import java.util.List;
 import java.util.Optional;
 
 public interface EventService {
-    void add(EventDto eventDto, User user);
+    EventDto add(EventDto eventDto, User user);
 
     List<EventDto> getAll();
 
     Optional<EventDto> getById(Long id);
 
-    EventDto update(Long id, EventDto eventDto);
+    EventDto update(EventDto eventDto);
 
     void delete(Long id);
 }

@@ -1,16 +1,12 @@
 package com.events.project.controllers;
 
-import com.events.project.models.dtos.EventDto;
 import com.events.project.models.dtos.VenueDto;
 import com.events.project.models.entities.User;
-import com.events.project.services.EventService;
 import com.events.project.services.UserService;
 import com.events.project.services.VenueService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -38,6 +34,21 @@ public class VenueController {
 
         return venueDto.map(dto -> new ResponseEntity<>(dto, HttpStatus.OK))
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    }
+
+    @GetMapping("/name/{name}")
+    public ResponseEntity<VenueDto> getByName(@PathVariable String name) {
+        Optional<VenueDto> venueDto = venueService.getByName(name);
+
+        return venueDto.map(dto -> new ResponseEntity<>(dto, HttpStatus.OK))
+                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    }
+
+    @GetMapping("/current-user")
+    public ResponseEntity<List<VenueDto>> getMyVenues() {
+        List<VenueDto> venueDtos = venueService.getMyVenues();
+
+        return new ResponseEntity<>(venueDtos, HttpStatus.OK);
     }
 
     @GetMapping

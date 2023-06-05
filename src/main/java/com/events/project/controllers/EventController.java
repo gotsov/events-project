@@ -21,11 +21,11 @@ public class EventController {
     private final UserService userService;
 
     @PostMapping
-    public ResponseEntity<String> add(@RequestBody EventDto eventDto) {
+    public ResponseEntity<EventDto> add(@RequestBody EventDto eventDto) {
         User user = userService.getLoggedUser();
-        eventService.add(eventDto, user);
+        EventDto response = eventService.add(eventDto, user);
 
-        return ResponseEntity.status(HttpStatus.CREATED).body("Successfully added event: " + eventDto.getName());
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @GetMapping("/{id}")
@@ -46,9 +46,9 @@ public class EventController {
         return new ResponseEntity<>(eventDtos, HttpStatus.OK);
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<EventDto> update(@PathVariable Long id, @RequestBody EventDto updatedEvent) {
-        EventDto eventDto = eventService.update(id, updatedEvent);
+    @PutMapping()
+    public ResponseEntity<EventDto> update(@RequestBody EventDto updatedEvent) {
+        EventDto eventDto = eventService.update(updatedEvent);
 
         if (eventDto != null) {
             return new ResponseEntity<>(eventDto, HttpStatus.OK);

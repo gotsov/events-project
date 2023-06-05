@@ -1,6 +1,5 @@
 package com.events.project.services;
 
-import com.events.project.models.dtos.EventDto;
 import com.events.project.models.dtos.VenueDto;
 import com.events.project.models.entities.User;
 
@@ -14,7 +13,11 @@ public interface VenueService {
 
     Optional<VenueDto> getById(Long id);
 
+    Optional<VenueDto> getByName(String name);
+
     VenueDto update(Long id, VenueDto venueDto);
 
     void delete(Long id);
+
+    List<VenueDto> getMyVenues();
 }

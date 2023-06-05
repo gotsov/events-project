@@ -12,5 +12,6 @@ import java.util.List;
 public class SectorDto {
     private String name;
     private Double price;
-    private EventDto event;
+    private int numberOfTickets;
+    //private EventDto event;
 }

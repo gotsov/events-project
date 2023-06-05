@@ -17,6 +17,8 @@ import java.util.Optional;
 @Service
 @AllArgsConstructor
 public class VenueServiceImpl implements VenueService {
+    private final UserService userService;
+
     private final ModelMapper modelMapper;
     private final VenueRepository venueRepository;
 
@@ -51,6 +53,18 @@ public class VenueServiceImpl implements VenueService {
     }
 
     @Override
+    public Optional<VenueDto> getByName(String name) {
+        Optional<Venue> venue = venueRepository.findByName(name);
+
+        if (venue.isPresent()) {
+            VenueDto eventDto = modelMapper.map(venue.get(), VenueDto.class);
+            return Optional.of(eventDto);
+        }
+
+        return Optional.empty();
+    }
+
+    @Override
     public VenueDto update(Long id, VenueDto venueDto) {
         Optional<Venue> venue = venueRepository.findById(id);
         Venue updatedVenue = modelMapper.map(venueDto, Venue.class);
@@ -75,5 +89,17 @@ public class VenueServiceImpl implements VenueService {
         } else {
             throw new ItemNotFoundException("Venue with id=" + id + " doesn't exist");
         }
+    }
+
+    @Override
+    public List<VenueDto> getMyVenues() {
+        User user = userService.getLoggedUser();
+        List<Venue> venues = venueRepository.findByUser(user);
+
+        List<VenueDto> venueDtos = new ArrayList<>();
+
+        venues.forEach(venue -> venueDtos.add(modelMapper.map(venue, VenueDto.class)));
+
+        return venueDtos;
     }
 }

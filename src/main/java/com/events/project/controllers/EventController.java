@@ -46,6 +46,21 @@ public class EventController {
         return new ResponseEntity<>(eventDtos, HttpStatus.OK);
     }
 
+    @GetMapping("/tags/all")
+    public ResponseEntity<List<String>> getAllTags() {
+        List<String> tags = eventService.getAllTags();
+
+        return new ResponseEntity<>(tags, HttpStatus.OK);
+    }
+
+    @GetMapping("/current-user")
+    public ResponseEntity<List<EventDto>> getCurrentUserEvents() {
+        User user = userService.getLoggedUser();
+        List<EventDto> eventDtos = eventService.getCurrentUserEvents(user);
+
+        return new ResponseEntity<>(eventDtos, HttpStatus.OK);
+    }
+
     @PutMapping()
     public ResponseEntity<EventDto> update(@RequestBody EventDto updatedEvent) {
         EventDto eventDto = eventService.update(updatedEvent);

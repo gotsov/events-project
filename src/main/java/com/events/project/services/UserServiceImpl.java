@@ -3,7 +3,9 @@ package com.events.project.services;
 import com.events.project.exceptions.ItemNotFoundException;
 import com.events.project.models.dtos.UserDto;
 import com.events.project.models.dtos.UserInfoDto;
+import com.events.project.models.entities.Event;
 import com.events.project.models.entities.User;
+import com.events.project.repositories.EventRepository;
 import com.events.project.repositories.UserRepository;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -16,6 +18,7 @@ import java.util.Optional;
 @Service
 @AllArgsConstructor
 public class UserServiceImpl implements UserService {
+    private final EventRepository eventRepository;
     private final UserRepository userRepository;
     private final ModelMapper modelMapper;
 
@@ -49,5 +52,17 @@ public class UserServiceImpl implements UserService {
     public UserInfoDto getLoggedUserDto() {
         User user = getLoggedUser();
         return modelMapper.map(user, UserInfoDto.class);
+    }
+
+    @Override
+    public Boolean isEventOrganizer(User user, Long eventId) {
+        Optional<Event> event = eventRepository.findById(eventId);
+
+        if (event.isPresent()) {
+            if (event.get().getUser().getId() == user.getId()) {
+                return true;
+            }
+        }
+        return false;
     }
 }

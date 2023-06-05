@@ -25,7 +25,6 @@ public class EventServiceImpl implements EventService {
     private final VenueRepository venueRepository;
     private final TagRepository tagRepository;
 
-    private final EventMapper eventMapper;
     private final ModelMapper modelMapper;
     private final SectorRepository sectorRepository;
 
@@ -73,6 +72,15 @@ public class EventServiceImpl implements EventService {
         events.forEach(event -> eventDtos.add(modelMapper.map(event, EventDto.class)));
 
         return eventDtos;
+    }
+
+    @Override
+    public List<String> getAllTags() {
+        List<Tag> tags = tagRepository.findAll();
+        List<String> result = new ArrayList<>();
+
+        tags.forEach(tag -> result.add(tag.getName()));
+        return result;
     }
 
     @Override
@@ -153,6 +161,12 @@ public class EventServiceImpl implements EventService {
             }
         }
         event.get().getTags().removeAll(tagsToRemove);
+
+        for (Tag tag : tagsToRemove) {
+            if(tag.getEvents().size() == 0) {
+                tagRepository.delete(tag);
+            }
+        }
     }
 
     @Override
@@ -164,5 +178,14 @@ public class EventServiceImpl implements EventService {
         } else {
             throw new ItemNotFoundException("Event with id=" + id + " doesn't exist");
         }
+    }
+
+    @Override
+    public List<EventDto> getCurrentUserEvents(User user) {
+        List<Event> events = eventRepository.findAllByUser(user);
+        List<EventDto> eventDtos = new ArrayList<>();
+
+        events.forEach(event -> eventDtos.add(modelMapper.map(event, EventDto.class)));
+        return eventDtos;
     }
 }

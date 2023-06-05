@@ -1,8 +1,6 @@
 package com.events.project.services;
 
 import com.events.project.models.dtos.EventDto;
-import com.events.project.models.dtos.VenueDto;
-import com.events.project.models.entities.Event;
 import com.events.project.models.entities.User;
 
 import java.util.List;
@@ -13,9 +11,13 @@ public interface EventService {
 
     List<EventDto> getAll();
 
+    List<String> getAllTags();
+
     Optional<EventDto> getById(Long id);
 
     EventDto update(EventDto eventDto);
 
     void delete(Long id);
+
+    List<EventDto> getCurrentUserEvents(User user);
 }

@@ -14,4 +14,6 @@ public interface UserService {
     User getLoggedUser();
 
     UserInfoDto getLoggedUserDto();
+
+    Boolean isEventOrganizer(User user, Long eventId);
 }

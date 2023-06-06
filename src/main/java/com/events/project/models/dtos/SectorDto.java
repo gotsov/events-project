@@ -10,8 +10,8 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 public class SectorDto {
+    private Long id;
     private String name;
     private Double price;
     private int numberOfTickets;
-    //private EventDto event;
 }

@@ -1,5 +1,6 @@
 package com.events.project.controllers;
 
+import com.events.project.models.dtos.EventDto;
 import com.events.project.models.dtos.SectorDto;
 import com.events.project.models.dtos.TicketDto;
 import com.events.project.models.entities.User;
@@ -11,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -20,6 +22,13 @@ import java.util.Optional;
 public class TicketController {
     private final TicketService ticketService;
     private final UserService userService;
+
+    @PostMapping("/generate/event")
+    public ResponseEntity<List<TicketDto>> generateTickets(@RequestBody List<SectorDto> sectorDtos,
+                                                           @RequestParam("eventId") Long eventId) {
+        List<TicketDto> ticketDtos = ticketService.generateTickets(sectorDtos, eventId);
+        return ResponseEntity.status(HttpStatus.OK).body(ticketDtos);
+    }
 
     @PostMapping("/buy")
     public ResponseEntity<String> buy(@RequestBody TicketDto ticketDto) {

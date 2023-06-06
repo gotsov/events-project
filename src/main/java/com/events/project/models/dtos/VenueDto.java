@@ -10,6 +10,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 public class VenueDto {
+    private String id;
     private String name;
     private String city;
     private String address;

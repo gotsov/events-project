@@ -1,5 +1,6 @@
 package com.events.project.models.dtos;
 
+import com.events.project.models.entities.Ticket;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -19,4 +20,5 @@ public class EventDto {
     private VenueDto venue;
     private List<TagDto> tags;
     private UserInfoDto user;
+    private List<TicketDto> tickets;
 }

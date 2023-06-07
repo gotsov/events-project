@@ -30,6 +30,13 @@ public class TicketController {
         return ResponseEntity.status(HttpStatus.OK).body(ticketDtos);
     }
 
+    @PostMapping("/generate/event/free")
+    public ResponseEntity<List<TicketDto>> generateFreeTickets(@RequestParam("eventId") Long eventId,
+                                                               @RequestParam("numberOfTickets") Integer numberOfTickets) {
+        List<TicketDto> ticketDtos = ticketService.generateFreeTickets(eventId, numberOfTickets);
+        return ResponseEntity.status(HttpStatus.OK).body(ticketDtos);
+    }
+
     @PostMapping("/buy")
     public ResponseEntity<String> buy(@RequestBody TicketDto ticketDto) {
         User user = userService.getLoggedUser();

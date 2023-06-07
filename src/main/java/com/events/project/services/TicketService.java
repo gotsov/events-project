@@ -11,4 +11,6 @@ public interface TicketService {
     void add(TicketDto ticketDto, User user);
 
     List<TicketDto> generateTickets(List<SectorDto> sectorDtos, Long eventId);
+
+    List<TicketDto> generateFreeTickets(Long eventId, Integer numberOfTickets);
 }

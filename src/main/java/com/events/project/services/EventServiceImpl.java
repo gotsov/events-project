@@ -4,10 +4,7 @@ import com.events.project.exceptions.ItemNotFoundException;
 import com.events.project.models.dtos.EventDto;
 import com.events.project.models.dtos.TagDto;
 import com.events.project.models.entities.*;
-import com.events.project.repositories.EventRepository;
-import com.events.project.repositories.SectorRepository;
-import com.events.project.repositories.TagRepository;
-import com.events.project.repositories.VenueRepository;
+import com.events.project.repositories.*;
 import com.events.project.util.EventMapper;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -24,6 +21,7 @@ public class EventServiceImpl implements EventService {
     private final EventRepository eventRepository;
     private final VenueRepository venueRepository;
     private final TagRepository tagRepository;
+    private final TicketRepository ticketRepository;
 
     private final ModelMapper modelMapper;
     private final SectorRepository sectorRepository;
@@ -174,6 +172,8 @@ public class EventServiceImpl implements EventService {
         Optional<Event> event = eventRepository.findById(id);
 
         if (event.isPresent()) {
+            List<Ticket> ticketsToDelete = ticketRepository.findAllByEvent(event.get());
+            ticketRepository.deleteAll(ticketsToDelete);
             eventRepository.delete(event.get());
         } else {
             throw new ItemNotFoundException("Event with id=" + id + " doesn't exist");

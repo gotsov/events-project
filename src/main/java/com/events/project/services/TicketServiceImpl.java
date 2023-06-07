@@ -65,4 +65,40 @@ public class TicketServiceImpl implements TicketService {
 
         return null;
     }
+
+    @Override
+    public List<TicketDto> generateFreeTickets(Long eventId, Integer numberOfTickets) {
+        Optional<Event> event = eventRepository.findById(eventId);
+
+        if (event.isPresent()) {
+            Sector freeSector = Sector.builder()
+                    .name("free")
+                    .numberOfTickets(numberOfTickets)
+                    .price(0.0)
+                    .venue(event.get().getVenue())
+                    .build();
+
+            if (event.get().getVenue().getSectors() != null) {
+                event.get().getVenue().getSectors().add(freeSector);
+            } else {
+                event.get().getVenue().setSectors(List.of(freeSector));
+            }
+            sectorRepository.save(freeSector);
+
+            List<Ticket> tickets = new ArrayList<>();
+            for (int i = 0; i < numberOfTickets; i++) {
+                Ticket newTicket = new Ticket();
+
+                newTicket.setEvent(event.get());
+                newTicket.setSector(freeSector);
+
+                tickets.add(newTicket);
+            }
+
+            ticketRepository.saveAll(tickets);
+            eventRepository.save(event.get());
+        }
+
+        return null;
+    }
 }

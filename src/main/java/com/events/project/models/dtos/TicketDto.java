@@ -12,4 +12,5 @@ import java.time.LocalDateTime;
 public class TicketDto {
     private LocalDateTime timeBought;
     private UserInfoDto user;
+    private SectorDto sector;
 }

@@ -9,7 +9,12 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 public class GlobalExceptionHandler {
     @ExceptionHandler(ItemNotFoundException.class)
     public ResponseEntity<String> handleItemNotFoundException(ItemNotFoundException e) {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+    }
+
+    @ExceptionHandler(IndexOutOfBoundsException.class)
+    public ResponseEntity<String> handleIndexOutOfBoundsException(IndexOutOfBoundsException e) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
     }
 
     @ExceptionHandler(Exception.class)

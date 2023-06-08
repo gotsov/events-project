@@ -205,8 +205,6 @@ public class EventServiceImpl implements EventService {
             }
         }
 
-
-
         List<SectorWithAvailableTicketsDto> result = new ArrayList<>();
 
         for (Sector sector : sectors) {

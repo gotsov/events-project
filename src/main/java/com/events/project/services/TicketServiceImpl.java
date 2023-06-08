@@ -7,12 +7,12 @@ import com.events.project.models.enums.TicketStatus;
 import com.events.project.repositories.EventRepository;
 import com.events.project.repositories.SectorRepository;
 import com.events.project.repositories.TicketRepository;
-import com.events.project.repositories.VenueRepository;
+import com.google.zxing.WriterException;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +24,7 @@ public class TicketServiceImpl implements TicketService {
     private final TicketRepository ticketRepository;
     private final EventRepository eventRepository;
     private final SectorRepository sectorRepository;
+    private final QRCodeService qrCodeService;
 
     private final ModelMapper modelMapper;
 
@@ -106,6 +107,10 @@ public class TicketServiceImpl implements TicketService {
                     sector.get(),
                     TicketStatus.AVAILABLE);
 
+            if (numberOfTickets > ticketsForEvent.size()) {
+                throw new IndexOutOfBoundsException("Exceeding the amount of tickets you can buy");
+            }
+
             List<Ticket> ticketsToBuy = ticketsForEvent.subList(0, numberOfTickets);
 
             for (Ticket ticket : ticketsToBuy) {
@@ -136,5 +141,19 @@ public class TicketServiceImpl implements TicketService {
         myTickets.forEach(ticket -> result.add(modelMapper.map(ticket, TicketFullInfoDto.class)));
 
         return result;
+    }
+
+    @Override
+    public byte[] generateTicketQRCode(Long ticketId) throws IOException, WriterException {
+        Ticket ticket = ticketRepository.findById(ticketId)
+                .orElseThrow(() -> new ItemNotFoundException("Ticket not found with ID: " + ticketId));
+
+        String qrCodeData = generateQRCodeData(ticket);
+
+        return qrCodeService.generateQRCodeImage(qrCodeData);
+    }
+
+    private String generateQRCodeData(Ticket ticket) {
+        return ticket.getId().toString();
     }
 }

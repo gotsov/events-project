@@ -8,13 +8,16 @@ import com.events.project.models.entities.User;
 import com.events.project.services.SectorService;
 import com.events.project.services.TicketService;
 import com.events.project.services.UserService;
+import com.google.zxing.WriterException;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/tickets")
@@ -55,5 +58,14 @@ public class TicketController {
         List<TicketFullInfoDto> result = ticketService.getMyTickets(user);
 
         return ResponseEntity.status(HttpStatus.OK).body(result);
+    }
+
+    @GetMapping("/{ticketId}/qrcode")
+    public ResponseEntity<byte[]> getTicketQRCode(@PathVariable String ticketId) throws IOException, WriterException {
+        byte[] qrCodeImage = ticketService.generateTicketQRCode(Long.valueOf(ticketId));
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.IMAGE_PNG);
+        return new ResponseEntity<>(qrCodeImage, headers, HttpStatus.OK);
     }
 }

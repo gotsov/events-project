@@ -3,6 +3,7 @@ package com.events.project.controllers;
 import com.events.project.models.dtos.EventDto;
 import com.events.project.models.dtos.SectorDto;
 import com.events.project.models.dtos.TicketDto;
+import com.events.project.models.dtos.TicketFullInfoDto;
 import com.events.project.models.entities.User;
 import com.events.project.services.SectorService;
 import com.events.project.services.TicketService;
@@ -38,12 +39,21 @@ public class TicketController {
     }
 
     @PostMapping("/buy")
-    public ResponseEntity<String> buy(@RequestBody TicketDto ticketDto) {
+    public ResponseEntity<List<TicketDto>> buy(@RequestParam("eventId") Long eventId,
+                                               @RequestParam("sectorId") Long sectorId,
+                                               @RequestParam("numberOfTickets") Integer numberOfTickets) {
         User user = userService.getLoggedUser();
 
-        ticketService.add(ticketDto, user);
+        List<TicketDto> result = ticketService.buy(user, eventId, sectorId, numberOfTickets);
+        return ResponseEntity.status(HttpStatus.OK).body(result);
+    }
 
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body("User: " + user + " successfully bought a ticket");
+    @GetMapping("/my-tickets")
+    public ResponseEntity<List<TicketFullInfoDto>> getMyTickets() {
+        User user = userService.getLoggedUser();
+
+        List<TicketFullInfoDto> result = ticketService.getMyTickets(user);
+
+        return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 }

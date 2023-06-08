@@ -1,11 +1,9 @@
 package com.events.project.services;
 
 import com.events.project.exceptions.ItemNotFoundException;
-import com.events.project.models.dtos.EventDto;
-import com.events.project.models.dtos.SectorDto;
-import com.events.project.models.dtos.TicketDto;
-import com.events.project.models.dtos.VenueDto;
+import com.events.project.models.dtos.*;
 import com.events.project.models.entities.*;
+import com.events.project.models.enums.TicketStatus;
 import com.events.project.repositories.EventRepository;
 import com.events.project.repositories.SectorRepository;
 import com.events.project.repositories.TicketRepository;
@@ -15,6 +13,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -27,13 +26,6 @@ public class TicketServiceImpl implements TicketService {
     private final SectorRepository sectorRepository;
 
     private final ModelMapper modelMapper;
-    @Override
-    public void add(TicketDto ticketDto, User user) {
-        Ticket ticket = modelMapper.map(ticketDto, Ticket.class);
-
-        ticket.setUser(user);
-        ticketRepository.save(ticket);
-    }
 
     @Override
     public List<TicketDto> generateTickets(List<SectorDto> sectorDtos, Long eventId) {
@@ -54,6 +46,7 @@ public class TicketServiceImpl implements TicketService {
 
                     newTicket.setEvent(event.get());
                     newTicket.setSector(sector);
+                    newTicket.setStatus(TicketStatus.AVAILABLE);
 
                     tickets.add(newTicket);
                 }
@@ -91,6 +84,7 @@ public class TicketServiceImpl implements TicketService {
 
                 newTicket.setEvent(event.get());
                 newTicket.setSector(freeSector);
+                newTicket.setStatus(TicketStatus.AVAILABLE);
 
                 tickets.add(newTicket);
             }
@@ -100,5 +94,47 @@ public class TicketServiceImpl implements TicketService {
         }
 
         return null;
+    }
+
+    @Override
+    public List<TicketDto> buy(User user, Long eventId, Long sectorId, Integer numberOfTickets) {
+        Optional<Event> event = eventRepository.findById(eventId);
+        Optional<Sector> sector = sectorRepository.findById(sectorId);
+
+        if (event.isPresent() && sector.isPresent()) {
+            List<Ticket> ticketsForEvent = ticketRepository.findAllByEventAndSectorAndStatus(event.get(),
+                    sector.get(),
+                    TicketStatus.AVAILABLE);
+
+            List<Ticket> ticketsToBuy = ticketsForEvent.subList(0, numberOfTickets);
+
+            for (Ticket ticket : ticketsToBuy) {
+                ticket.setUser(user);
+                ticket.setTimeBought(LocalDateTime.now());
+                ticket.setStatus(TicketStatus.BOUGHT);
+            }
+
+            ticketRepository.saveAll(ticketsToBuy);
+        } else {
+            throw new ItemNotFoundException("Event or Sector does not exist");
+        }
+
+//        return "User: " + user.getEmail()
+//                + ", bought " + numberOfTickets
+//                + " tickets for event: " + event.get().getName()
+//                + " successfully";
+
+        return null;
+    }
+
+    @Override
+    public List<TicketFullInfoDto> getMyTickets(User user) {
+        List<Ticket> myTickets = ticketRepository.findAllByUser(user);
+
+        List<TicketFullInfoDto> result = new ArrayList<>();
+
+        myTickets.forEach(ticket -> result.add(modelMapper.map(ticket, TicketFullInfoDto.class)));
+
+        return result;
     }
 }

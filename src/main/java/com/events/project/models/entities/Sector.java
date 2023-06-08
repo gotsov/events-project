@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.List;
+import java.util.Objects;
 
 @Getter
 @Setter
@@ -28,4 +29,17 @@ public class Sector extends BaseEntity {
 
     @Column
     private int numberOfTickets;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Sector sector = (Sector) o;
+        return Objects.equals(name, sector.name) && Objects.equals(price, sector.price) && Objects.equals(venue, sector.venue);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, price, venue);
+    }
 }

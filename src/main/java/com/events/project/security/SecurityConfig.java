@@ -55,7 +55,13 @@ public class SecurityConfig {
                 .and()
                 .authenticationManager(authenticationManager)
                 .formLogin()
-                .successHandler(new SuccessfulLoginHandler());
+                .successHandler(new SuccessfulLoginHandler())
+                .and()
+                .logout()
+                .logoutUrl("/logout") // Set the logout URL
+                .logoutSuccessUrl("/") // Set the redirect URL after successful logout
+                .invalidateHttpSession(true) // Invalidate the session
+                .deleteCookies("JSESSIONID"); // Delete the JSESSIONID cookie;
 
         return httpSecurity.build();
     }

@@ -2,8 +2,11 @@ package com.events.project.services;
 
 import com.events.project.exceptions.ItemNotFoundException;
 import com.events.project.models.dtos.EventDto;
+import com.events.project.models.dtos.SectorDto;
+import com.events.project.models.dtos.SectorWithAvailableTicketsDto;
 import com.events.project.models.dtos.TagDto;
 import com.events.project.models.entities.*;
+import com.events.project.models.enums.TicketStatus;
 import com.events.project.repositories.*;
 import com.events.project.util.EventMapper;
 import lombok.AllArgsConstructor;
@@ -187,5 +190,38 @@ public class EventServiceImpl implements EventService {
 
         events.forEach(event -> eventDtos.add(modelMapper.map(event, EventDto.class)));
         return eventDtos;
+    }
+
+    @Override
+    public List<SectorWithAvailableTicketsDto> getEventSectors(Long id) {
+        Optional<Event> event = eventRepository.findById(id);
+        List<Sector> sectors = new ArrayList<>();
+
+        if (event.isPresent()) {
+            for (Ticket ticket : event.get().getTickets()) {
+                if (!sectors.contains(ticket.getSector())) {
+                    sectors.add(ticket.getSector());
+                }
+            }
+        }
+
+
+
+        List<SectorWithAvailableTicketsDto> result = new ArrayList<>();
+
+        for (Sector sector : sectors) {
+            int availableTickets = 0;
+            for (Ticket ticket : sector.getTickets()) {
+                if (ticket.getStatus() == TicketStatus.AVAILABLE) {
+                    availableTickets++;
+                }
+            }
+
+            SectorWithAvailableTicketsDto sectorDto = modelMapper.map(sector, SectorWithAvailableTicketsDto.class);
+            sectorDto.setNumberOfAvailableTickets(availableTickets);
+            result.add(sectorDto);
+        }
+
+        return result;
     }
 }

@@ -1,6 +1,9 @@
 package com.events.project.controllers;
 
 import com.events.project.models.dtos.EventDto;
+import com.events.project.models.dtos.SectorDto;
+import com.events.project.models.dtos.SectorWithAvailableTicketsDto;
+import com.events.project.models.entities.Sector;
 import com.events.project.models.entities.User;
 import com.events.project.services.EventService;
 import com.events.project.services.UserService;
@@ -32,11 +35,7 @@ public class EventController {
     public ResponseEntity<EventDto> getById(@PathVariable Long id) {
         Optional<EventDto> eventDto = eventService.getById(id);
 
-        if (eventDto.isPresent()) {
-            return new ResponseEntity<>(eventDto.get(), HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+        return eventDto.map(dto -> new ResponseEntity<>(dto, HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
     @GetMapping
@@ -76,5 +75,12 @@ public class EventController {
     public ResponseEntity<String> deleteItem(@PathVariable Long id) {
         eventService.delete(id);
         return new ResponseEntity<>("Event deleted successfully", HttpStatus.OK);
+    }
+
+    @GetMapping("/sectors/event/{id}")
+    public ResponseEntity<List<SectorWithAvailableTicketsDto>> getEventSectors(@PathVariable Long id) {
+        List<SectorWithAvailableTicketsDto> sectorDtos = eventService.getEventSectors(id);
+
+        return new ResponseEntity<>(sectorDtos, HttpStatus.OK);
     }
 }

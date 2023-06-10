@@ -5,14 +5,15 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
+
 @Getter
 @Setter
 @NoArgsConstructor
-public class UserInfoDto {
+public class ReportDto {
     private Long id;
-    private String email;
-    private String firstName;
-    private String lastName;
-    private Role role;
-    private Boolean isReported;
+    private UserInfoDto reportedUser;
+    private UserInfoDto reportingUser;
+    private LocalDateTime date;
+    private String comment;
 }

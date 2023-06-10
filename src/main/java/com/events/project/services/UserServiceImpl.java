@@ -4,9 +4,11 @@ import com.events.project.exceptions.ItemNotFoundException;
 import com.events.project.models.dtos.UserDto;
 import com.events.project.models.dtos.UserInfoDto;
 import com.events.project.models.entities.Event;
+import com.events.project.models.entities.Report;
 import com.events.project.models.entities.User;
 import com.events.project.models.enums.Role;
 import com.events.project.repositories.EventRepository;
+import com.events.project.repositories.ReportRepository;
 import com.events.project.repositories.UserRepository;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -23,6 +25,7 @@ import java.util.Optional;
 public class UserServiceImpl implements UserService {
     private final EventRepository eventRepository;
     private final UserRepository userRepository;
+    private final ReportRepository reportRepository;
     private final ModelMapper modelMapper;
 
     @Override
@@ -74,7 +77,15 @@ public class UserServiceImpl implements UserService {
         List<User> users = userRepository.findAll();
         List<UserInfoDto> result = new ArrayList<>();
 
-        users.forEach(user -> result.add(modelMapper.map(user, UserInfoDto.class)));
+        for (User user : users) {
+            List<Report> reports = reportRepository.findAllByReportedUser(user);
+
+            UserInfoDto userInfoDto = modelMapper.map(user, UserInfoDto.class);
+            userInfoDto.setIsReported(reports.size() > 0);
+
+            result.add(userInfoDto);
+        }
+
         return result;
     }
 

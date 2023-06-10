@@ -45,4 +45,10 @@ public class User extends BaseEntity {
 
     @Enumerated(EnumType.STRING)
     private Role role;
+
+    @OneToMany(mappedBy = "reportedUser")
+    private List<Report> reportedReports;
+
+    @OneToMany(mappedBy = "reportingUser")
+    private List<Report> reportingReports;
 }

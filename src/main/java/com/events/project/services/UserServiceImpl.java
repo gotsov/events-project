@@ -5,6 +5,7 @@ import com.events.project.models.dtos.UserDto;
 import com.events.project.models.dtos.UserInfoDto;
 import com.events.project.models.entities.Event;
 import com.events.project.models.entities.User;
+import com.events.project.models.enums.Role;
 import com.events.project.repositories.EventRepository;
 import com.events.project.repositories.UserRepository;
 import lombok.AllArgsConstructor;
@@ -13,6 +14,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -64,5 +67,54 @@ public class UserServiceImpl implements UserService {
             }
         }
         return false;
+    }
+
+    @Override
+    public List<UserInfoDto> getAll() {
+        List<User> users = userRepository.findAll();
+        List<UserInfoDto> result = new ArrayList<>();
+
+        users.forEach(user -> result.add(modelMapper.map(user, UserInfoDto.class)));
+        return result;
+    }
+
+    @Override
+    public UserInfoDto promoteUser(Long userId, String decision) {
+        Optional<User> user = userRepository.findById(userId);
+
+        if (user.isPresent()) {
+            switch (decision) {
+                case "ACCEPT" -> user.get().setRole(Role.ORGANIZER);
+                case "DENY" -> user.get().setRole(Role.REGULAR);
+            }
+
+            userRepository.save(user.get());
+
+            return modelMapper.map(user.get(), UserInfoDto.class);
+        } else {
+            throw new ItemNotFoundException("User: " + userId + " not found");
+        }
+    }
+
+    @Override
+    public UserInfoDto demoteUser(Long userId) {
+        Optional<User> user = userRepository.findById(userId);
+
+        if (user.isPresent()) {
+            user.get().setRole(Role.REGULAR);
+            userRepository.save(user.get());
+
+            return modelMapper.map(user.get(), UserInfoDto.class);
+        } else {
+            throw new ItemNotFoundException("User: " + userId + " not found");
+        }
+    }
+
+    @Override
+    public UserInfoDto requestOrganizer(User user) {
+        user.setRole(Role.PENDING);
+        userRepository.save(user);
+
+        return modelMapper.map(user, UserInfoDto.class);
     }
 }

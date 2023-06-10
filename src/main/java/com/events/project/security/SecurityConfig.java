@@ -27,7 +27,8 @@ public class SecurityConfig {
     private final PasswordEncoder passwordEncoder;
     private final UserDetailsService userDetailsService;
     private static final String[] AUTH_WHITELIST = {"/", "/home", "/login",
-                                                    "/api/users/register"};
+                                                    "/api/users/register",
+                                                    "/api/events", "/api/events/{id}"};
 
     @Bean
     protected CorsConfigurationSource corsConfigurationSource() {

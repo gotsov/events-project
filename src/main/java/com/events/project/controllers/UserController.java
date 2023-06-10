@@ -4,6 +4,7 @@ import com.events.project.models.dtos.UserDto;
 import com.events.project.models.dtos.UserInfoDto;
 import com.events.project.models.entities.User;
 import com.events.project.services.UserService;
+import jakarta.websocket.server.PathParam;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +15,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/users")
@@ -45,5 +48,34 @@ public class UserController {
         User user = userService.getLoggedUser();
         Boolean isOrganizer = userService.isEventOrganizer(user, eventId.longValue());
         return ResponseEntity.ok(isOrganizer);
+    }
+
+    @GetMapping("/all")
+    public ResponseEntity<List<UserInfoDto>> getAllUsers() {
+        List<UserInfoDto> users = userService.getAll();
+        return ResponseEntity.ok(users);
+    }
+
+    @GetMapping("/accept-user/{userId}")
+    public ResponseEntity<UserInfoDto> acceptUser(@PathVariable Long userId,
+                                             @PathParam("decision") String decision) {
+        UserInfoDto userDto = userService.promoteUser(userId, decision);
+
+        return ResponseEntity.ok(userDto);
+    }
+
+    @GetMapping("/demote-user/{userId}")
+    public ResponseEntity<UserInfoDto> demoteUser(@PathVariable Long userId) {
+        UserInfoDto userDto = userService.demoteUser(userId);
+
+        return ResponseEntity.ok(userDto);
+    }
+
+    @GetMapping("/request/organizer")
+    public ResponseEntity<UserInfoDto> requestOrganizer() {
+        User user = userService.getLoggedUser();
+        UserInfoDto userDto = userService.requestOrganizer(user);
+
+        return ResponseEntity.ok(userDto);
     }
 }

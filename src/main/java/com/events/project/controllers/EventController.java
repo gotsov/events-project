@@ -1,9 +1,7 @@
 package com.events.project.controllers;
 
 import com.events.project.models.dtos.EventDto;
-import com.events.project.models.dtos.SectorDto;
 import com.events.project.models.dtos.SectorWithAvailableTicketsDto;
-import com.events.project.models.entities.Sector;
 import com.events.project.models.entities.User;
 import com.events.project.services.EventService;
 import com.events.project.services.UserService;
@@ -13,7 +11,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/events")
@@ -33,9 +30,9 @@ public class EventController {
 
     @GetMapping("/{id}")
     public ResponseEntity<EventDto> getById(@PathVariable Long id) {
-        Optional<EventDto> eventDto = eventService.getById(id);
+        EventDto eventDto = eventService.getById(id);
 
-        return eventDto.map(dto -> new ResponseEntity<>(dto, HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+        return new ResponseEntity<>(eventDto, HttpStatus.OK);
     }
 
     @GetMapping

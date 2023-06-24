@@ -1,13 +1,11 @@
 package com.events.project.services;
 
 import com.events.project.models.dtos.EventDto;
-import com.events.project.models.dtos.SectorDto;
 import com.events.project.models.dtos.SectorWithAvailableTicketsDto;
-import com.events.project.models.entities.Sector;
 import com.events.project.models.entities.User;
 
 import java.util.List;
-import java.util.Optional;
+
 
 public interface EventService {
     EventDto add(EventDto eventDto, User user);
@@ -16,7 +14,7 @@ public interface EventService {
 
     List<String> getAllTags();
 
-    Optional<EventDto> getById(Long id);
+    EventDto getById(Long id);
 
     EventDto update(EventDto eventDto);
 
@@ -26,3 +24,4 @@ public interface EventService {
 
     List<SectorWithAvailableTicketsDto> getEventSectors(Long id);
 }
+

@@ -65,19 +65,14 @@ public class VenueServiceImpl implements VenueService {
     }
 
     @Override
-    public VenueDto update(Long id, VenueDto venueDto) {
+    public void update(Long id, VenueDto venueDto) {
         Optional<Venue> venue = venueRepository.findById(id);
         Venue updatedVenue = modelMapper.map(venueDto, Venue.class);
 
         if (venue.isPresent()) {
             BeanUtils.copyProperties(venue, updatedVenue);
-
             venueRepository.save(venue.get());
-
-            return modelMapper.map(venue, VenueDto.class);
         }
-
-        return null;
     }
 
     @Override

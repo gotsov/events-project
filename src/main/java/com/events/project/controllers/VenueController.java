@@ -59,14 +59,10 @@ public class VenueController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<VenueDto> update(@PathVariable Long id, @RequestBody VenueDto updatedVenue) {
-        VenueDto venueDto = venueService.update(id, updatedVenue);
+    public ResponseEntity<String> update(@PathVariable Long id, @RequestBody VenueDto updatedVenue) {
+        venueService.update(id, updatedVenue);
 
-        if (venueDto != null) {
-            return new ResponseEntity<>(venueDto, HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+        return new ResponseEntity<>("Updated venue: " + id, HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")

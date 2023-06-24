@@ -2,13 +2,11 @@ package com.events.project.services;
 
 import com.events.project.exceptions.ItemNotFoundException;
 import com.events.project.models.dtos.EventDto;
-import com.events.project.models.dtos.SectorDto;
 import com.events.project.models.dtos.SectorWithAvailableTicketsDto;
 import com.events.project.models.dtos.TagDto;
 import com.events.project.models.entities.*;
 import com.events.project.models.enums.TicketStatus;
 import com.events.project.repositories.*;
-import com.events.project.util.EventMapper;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -85,15 +83,14 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public Optional<EventDto> getById(Long id) {
+    public EventDto getById(Long id) {
         Optional<Event> event = eventRepository.findById(id);
 
         if (event.isPresent()) {
-            EventDto eventDto = modelMapper.map(event.get(), EventDto.class);
-            return Optional.of(eventDto);
+            return modelMapper.map(event.get(), EventDto.class);
+        } else {
+            throw new ItemNotFoundException("Event not found id=" + id);
         }
-
-        return Optional.empty();
     }
 
     @Override

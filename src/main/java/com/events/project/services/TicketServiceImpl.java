@@ -29,7 +29,7 @@ public class TicketServiceImpl implements TicketService {
     private final ModelMapper modelMapper;
 
     @Override
-    public List<TicketDto> generateTickets(List<SectorDto> sectorDtos, Long eventId) {
+    public void generateTickets(List<SectorDto> sectorDtos, Long eventId) {
         Optional<Event> event = eventRepository.findById(eventId);
         List<Sector> sectors = new ArrayList<>();
 
@@ -56,12 +56,10 @@ public class TicketServiceImpl implements TicketService {
                 eventRepository.save(event.get());
             }
         }
-
-        return null;
     }
 
     @Override
-    public List<TicketDto> generateFreeTickets(Long eventId, Integer numberOfTickets) {
+    public void generateFreeTickets(Long eventId, Integer numberOfTickets) {
         Optional<Event> event = eventRepository.findById(eventId);
 
         if (event.isPresent()) {
@@ -93,12 +91,10 @@ public class TicketServiceImpl implements TicketService {
             ticketRepository.saveAll(tickets);
             eventRepository.save(event.get());
         }
-
-        return null;
     }
 
     @Override
-    public List<TicketDto> buy(User user, Long eventId, Long sectorId, Integer numberOfTickets) {
+    public void buy(User user, Long eventId, Long sectorId, Integer numberOfTickets) {
         Optional<Event> event = eventRepository.findById(eventId);
         Optional<Sector> sector = sectorRepository.findById(sectorId);
 
@@ -123,13 +119,6 @@ public class TicketServiceImpl implements TicketService {
         } else {
             throw new ItemNotFoundException("Event or Sector does not exist");
         }
-
-//        return "User: " + user.getEmail()
-//                + ", bought " + numberOfTickets
-//                + " tickets for event: " + event.get().getName()
-//                + " successfully";
-
-        return null;
     }
 
     @Override

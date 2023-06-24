@@ -15,7 +15,7 @@ public interface VenueService {
 
     Optional<VenueDto> getByName(String name);
 
-    VenueDto update(Long id, VenueDto venueDto);
+    void update(Long id, VenueDto venueDto);
 
     void delete(Long id);
 

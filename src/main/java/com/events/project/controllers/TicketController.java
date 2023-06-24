@@ -28,27 +28,27 @@ public class TicketController {
     private final UserService userService;
 
     @PostMapping("/generate/event")
-    public ResponseEntity<List<TicketDto>> generateTickets(@RequestBody List<SectorDto> sectorDtos,
+    public ResponseEntity<String> generateTickets(@RequestBody List<SectorDto> sectorDtos,
                                                            @RequestParam("eventId") Long eventId) {
-        List<TicketDto> ticketDtos = ticketService.generateTickets(sectorDtos, eventId);
-        return ResponseEntity.status(HttpStatus.OK).body(ticketDtos);
+        ticketService.generateTickets(sectorDtos, eventId);
+        return ResponseEntity.status(HttpStatus.OK).body("Successfully generated tickets");
     }
 
     @PostMapping("/generate/event/free")
-    public ResponseEntity<List<TicketDto>> generateFreeTickets(@RequestParam("eventId") Long eventId,
+    public ResponseEntity<String> generateFreeTickets(@RequestParam("eventId") Long eventId,
                                                                @RequestParam("numberOfTickets") Integer numberOfTickets) {
-        List<TicketDto> ticketDtos = ticketService.generateFreeTickets(eventId, numberOfTickets);
-        return ResponseEntity.status(HttpStatus.OK).body(ticketDtos);
+        ticketService.generateFreeTickets(eventId, numberOfTickets);
+        return ResponseEntity.status(HttpStatus.OK).body("Successfully generated tickets");
     }
 
     @PostMapping("/buy")
-    public ResponseEntity<List<TicketDto>> buy(@RequestParam("eventId") Long eventId,
+    public ResponseEntity<String> buy(@RequestParam("eventId") Long eventId,
                                                @RequestParam("sectorId") Long sectorId,
                                                @RequestParam("numberOfTickets") Integer numberOfTickets) {
         User user = userService.getLoggedUser();
 
-        List<TicketDto> result = ticketService.buy(user, eventId, sectorId, numberOfTickets);
-        return ResponseEntity.status(HttpStatus.OK).body(result);
+        ticketService.buy(user, eventId, sectorId, numberOfTickets);
+        return ResponseEntity.status(HttpStatus.OK).body("Successfully bought ticket for event: " + eventId);
     }
 
     @GetMapping("/my-tickets")

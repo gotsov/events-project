@@ -41,7 +41,4 @@ public class Event extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
-
-    @OneToMany(mappedBy = "event")
-    private List<Comment> comments;
 }

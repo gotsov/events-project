@@ -4,8 +4,6 @@ import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.AuthenticationProvider;
-import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -26,7 +24,7 @@ import java.util.List;
 public class SecurityConfig {
     private final PasswordEncoder passwordEncoder;
     private final UserDetailsService userDetailsService;
-    private static final String[] AUTH_WHITELIST = {"/", "/home", "/login",
+    private static final String[] AUTH_WHITELIST = {"/", "/login",
                                                     "/api/users/register",
                                                     "/api/events", "/api/events/{id}"};
 
@@ -59,10 +57,10 @@ public class SecurityConfig {
                 .successHandler(new SuccessfulLoginHandler())
                 .and()
                 .logout()
-                .logoutUrl("/logout") // Set the logout URL
-                .logoutSuccessUrl("/") // Set the redirect URL after successful logout
-                .invalidateHttpSession(true) // Invalidate the session
-                .deleteCookies("JSESSIONID"); // Delete the JSESSIONID cookie;
+                .logoutUrl("/logout")
+                .logoutSuccessUrl("/")
+                .invalidateHttpSession(true)
+                .deleteCookies("JSESSIONID");
 
         return httpSecurity.build();
     }
@@ -73,12 +71,5 @@ public class SecurityConfig {
         authenticationManagerBuilder.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder);
         AuthenticationManager authenticationManager = authenticationManagerBuilder.build();
         return authenticationManager;
-    }
-
-    private AuthenticationProvider getAuthenticationProvider() {
-        DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
-        authenticationProvider.setUserDetailsService(userDetailsService);
-        authenticationProvider.setPasswordEncoder(passwordEncoder);
-        return authenticationProvider;
     }
 }

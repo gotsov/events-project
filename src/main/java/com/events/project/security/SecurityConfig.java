@@ -26,7 +26,8 @@ public class SecurityConfig {
     private final UserDetailsService userDetailsService;
     private static final String[] AUTH_WHITELIST = {"/", "/login",
                                                     "/api/users/register",
-                                                    "/api/events", "/api/events/{id}"};
+                                                    "/api/events", "/api/events/{id}",
+                                                    "/api/events/tags/all"};
 
     @Bean
     protected CorsConfigurationSource corsConfigurationSource() {
